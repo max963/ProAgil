@@ -1,0 +1,5 @@
+/.vscode
+/ProAgil.WebAPI/bin
+/ProAgil.WebAPI/obj
+/ProAgil.WebAPI/Migrations
+/ProAgil.WebAPI/ProAgil.db
