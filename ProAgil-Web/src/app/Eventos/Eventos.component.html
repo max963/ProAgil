@@ -1,9 +1,52 @@
-<p>
-  Eventos works!
-</p>
-
-
-
-<div *ngFor="let evento of eventos">
-  {{evento.tema}}
+<div class="form-inline">
+  <div class="form-group mb-2">
+    <label class="mr-2">Filtro</label>
+    <input type="text" class="form-control mr-2" placeholder="buscar" [(ngModel)]="filtroLista">
+  </div>
+  <button class="btn btn-outline-success">Buscar</button>
 </div>
+<h3>Filtro: {{filtroLista}}</h3>
+<table class="table table-striped">
+  <thead class="thead-dark">
+    <tr>
+      <th>
+        <button (click)="alternarImagem()" class="btn btn-outline-primary">
+          Mostrar Imagem
+        </button> 
+      </th>
+      <th>Id</th>
+      <th>Tema</th>
+      <th>Local</th>
+      <th>Data</th>
+      <th>Qtd Pessoas</th>
+      <th>Lote</th>
+      <th>Opções</th>
+    </tr>
+  </thead>
+  <tbody *ngIf="eventos">
+    <tr *ngFor="let evento of eventosFilrtados">
+      <td>
+        <img *ngIf="evento.imgUrl && mostrarImagem" src='http://localhost:5000/img/{{evento.imgUrl}}'
+          [style.width.px]="imgLargura" [style.margin.px]="imgMargem">
+
+      </td>
+      <td>{{evento.Id}}</td>
+      <td>{{evento.tema}}</td>
+      <td>{{evento.local}}</td>
+      <td>{{evento.dataEvento}}</td> 
+      <td>{{evento.qtdPessoas}}</td>
+      <td></td>
+      <td>
+        <button class="btn btn-success"></button>
+        <button class="btn btn-danger"></button>
+      </td>
+    </tr>
+  </tbody>
+  <tfoot *ngIf="!eventos">
+    <tr>
+      <td colspan="7" class="text-center">
+        <h3>Nenhum evento encontrado</h3>
+      </td>
+    </tr>
+  </tfoot>
+</table>

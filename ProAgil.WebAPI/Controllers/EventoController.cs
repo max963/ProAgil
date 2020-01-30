@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using ProAgil.WebAPI.Interfaces;
 using ProAgil.WebAPI.Models;
 
 namespace ProAgil.WebAPI.Controllers
@@ -14,11 +15,11 @@ namespace ProAgil.WebAPI.Controllers
     [Route("[controller]")]
     public class EventoController: ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly IRepository _repository;
 
-        public EventoController(DataContext context)
+        public EventoController(IRepository repository)
         {
-            this._context = context;
+            this._repository = repository;
             
         }
         
@@ -28,7 +29,7 @@ namespace ProAgil.WebAPI.Controllers
         {
             try
             {
-                var result = await _context.Eventos.FirstOrDefaultAsync(x => x.EventoId == id);
+                var result = await _repository.GetEventoByIdAsync(id);
                 return Ok(result);
             }
             catch (System.Exception)
@@ -40,7 +41,65 @@ namespace ProAgil.WebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Evento>>> Get()
         {
-            return await _context.Eventos.ToListAsync();
+            return await _repository.GetAllEventosAsync();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Post(Evento model)
+        {
+            try
+            {
+                _repository.Add(model);
+
+                if (await _repository.SaveChangesAsync())
+                {
+                    return Created($"/api/evento/{model.Id}", model);
+                }
+            }
+            catch (System.Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Erro no servidor");
+            }
+
+            return BadRequest();
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> Put(int eventoId, Evento model)
+        {
+            try
+            {
+                var evento = _repository.GetEventoByIdAsync(eventoId, false);
+                if (evento == null) return NotFound();
+                _repository.Update(model);
+                if (await _repository.SaveChangesAsync())
+                    return Created($"/api/evento/{model.Id}", model);
+            }
+            catch (System.Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Erro no servidor");
+            }
+
+            return BadRequest();
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> Delete(int eventoId)
+        {
+            try
+            {
+                var evento = _repository.GetEventoByIdAsync(eventoId, false);
+                if (evento == null) return NotFound();
+                _repository.Delete(evento);
+                if (await _repository.SaveChangesAsync())
+                    return Ok();
+            }
+            catch (System.Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Erro no servidor");
+            }
+
+            return BadRequest();
         }
     }
 }
