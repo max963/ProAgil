@@ -5,19 +5,33 @@ import { AppComponent } from './app.component';
 import { EventosComponent } from './Eventos/Eventos.component';
 import { NavComponent } from './nav/nav.component';
 import { FormsModule } from '@angular/forms';
+import { DateTimeFormatPipe } from './helpers/DateTimeFormat.pipe';
+import { EventoService } from './Services/Evento.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 @NgModule({
    declarations: [
       AppComponent,
       EventosComponent,
-      NavComponent
+      NavComponent,
+      DateTimeFormatPipe
    ],
    imports: [
+
       BrowserModule,
       HttpClientModule,
-      FormsModule
+      FormsModule,
+      BrowserAnimationsModule,
+      BsDropdownModule.forRoot(),
+      TooltipModule.forRoot(),
+      ModalModule.forRoot()
    ],
-   providers: [],
+   providers: [
+      EventoService
+   ],
    bootstrap: [
       AppComponent
    ]
